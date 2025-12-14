@@ -46,7 +46,19 @@ jobs:
           # We use explicit git commands instead of wildcards to prevent parsing errors
           claude_args: |
             --system-prompt "The project is already set up. Server running at localhost:3000. Logs at logs.txt. Use 'sqlite3' for DB."
-            --allowedTools "Edit,Read,Write,MultiEdit,Glob,Grep,LS,mcp__github_comment__update_claude_comment,Bash(git add),Bash(git commit),Bash(git push),Bash(git status),Bash(git diff),Bash(git log),Bash(git rm),Bash(npm),Bash(sqlite3)"
+            --mcp-config '{
+              "mcpServers": {
+                "playwright": {
+                  "command": "npx",
+                  "args": [
+                    "@playwright/mcp@latest",
+                    "--allowed-origins",
+                    "localhost:3000;cdn.tailwindcss.com;esm.sh"
+                  ]
+                }
+              }
+            }'
+            --allowedTools "Bash(npm:*),Bash(sqlite3:*),mcp__playwright__browser_snapshot,mcp__playwright__browser_click,mcp__playwright__browser_fill,mcp__playwright__browser_goto,mcp__playwright__browser_screenshot,mcp__playwright__browser_get_text"
           
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
